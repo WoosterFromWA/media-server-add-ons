@@ -1,0 +1,30 @@
+version: '3'
+services:
+
+###--- Jellyfin Setup ---###
+  jellyfin:
+    container_name: jellyfin
+    image: jellyfin/jellyfin
+    volumes:
+      - /opt/appdata/jellyfin/config:/config
+      - /mnt/unionfs:/unionfs
+      - /etc/localtime:/etc/localtime:ro
+    restart: always
+    environment:
+      - PUID=1000
+      - GUID=1000
+    labels:
+      traefik.enable: "true"
+      traefik.frontend.redirect.entryPoint: "https"
+      traefik.frontend.rule: "Host:jellyfin.wooster.xyz"
+      traefik.port: "8096"
+      traefik.docker.network: "plexguide"
+    # ports:
+    #   - 8123:8123
+    networks:
+      - plexguide
+
+networks:
+  plexguide:
+    external:
+      name: plexguide
